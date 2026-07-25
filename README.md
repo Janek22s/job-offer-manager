@@ -50,7 +50,7 @@ The project includes an interactive command-line management console with role-ba
 
 Run the console with:
 ```bash
-python management_cli.py
+python job_board/management_cli.py
 ```
 
 ## Installation
@@ -80,23 +80,55 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-5. Create a PostgreSQL database for the application, including triggers, indexes, and sample data as described in the PostgreSQL Database Initialization section.
+5. Create a PostgreSQL database:
+```bash 
+psql -U postgres -c "CREATE DATABASE job_offer_manager;"
+```
+You can also create the database using pgAdmin.
 
-6. Create a .env file based on .env.example and configure the required environment variables.
+6. Create a .env file in the repository root directory:
+```bash
+DJANGO_SECRET_KEY=replace_with_a_random_secret_key
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+
+POSTGRES_DB=job_offer_manager
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your_postgresql_password
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+```
+Replace the PostgreSQL username and password with your local database credentials.
 
 7. Apply database migrations:
 ```bash
-python manage.py migrate
+python job_board/manage.py migrate
 ```
 
-8. Create an administrator account:
+8. Load the additional PostgreSQL indexes and triggers:
 ```bash
-python manage.py createsuperuser
+psql -U postgres -d job_offer_manager -f db_files/indexes.sql
+psql -U postgres -d job_offer_manager -f db_files/triggers.sql
 ```
 
-9. Start the development server:
+9. Optionally generate demo data for local development:
 ```bash
-python manage.py runserver
+python job_board/manage.py seed_demo
+```
+To recreate the demo data:
+```bash
+python job_board/manage.py seed_demo --reset
+```
+All generated demo accounts use Demo123!ChangeMe as their default password.
+
+10. Create an administrator account:
+```bash
+python job_board/manage.py createsuperuser
+```
+
+11. Start the development server:
+```bash
+python job_board/manage.py runserver
 ```
 The application will be available at:
 ```bash
@@ -105,38 +137,57 @@ http://127.0.0.1:8000/
 
 ## Running Tests
 
-Run the test suite with:
-
+Run the test suite from the repository root directory:
 ```bash
-python manage.py test
+python job_board/manage.py test
 ```
 
 ## PostgreSQL Database Initialization
+Django migrations create the application's database tables. After running the migrations, load the additional PostgreSQL indexes and triggers:
 
-After applying the Django migrations, load the additional PostgreSQL configuration files located in the db_files directory.
+python job_board/manage.py migrate
+psql -U postgres -d job_offer_manager -f db_files/indexes.sql
+psql -U postgres -d job_offer_manager -f db_files/triggers.sql
 
-These files create the required database indexes and triggers and optionally insert sample data.
+Replace postgres and job_offer_manager with the values configured in your .env file when using different database credentials.
 
-Run the SQL files in the following order:
+Do not run db_files/schema.sql after Django migrations. The file contains a standalone SQL representation of the database schema and would attempt to create tables that already exist.
 
+## Demo Data
+
+The project includes a Django management command that generates sample data for local development and testing.
+
+The command creates:
+
+4 companies
+5 candidate accounts
+4 employer accounts
+1 administrator account
+5 candidate profiles and CV records
+4 employer profiles
+10 job offers
+Sample saved offers
+Sample job applications with different statuses
+
+To generate the demo data, run the following command from the repository root:
 ```bash
-psql -U <database_user> -d <database_name> -f db_files/indexes.sql
-psql -U <database_user> -d <database_name> -f db_files/triggers.sql
-psql -U <database_user> -d <database_name> -f db_files/sample_data.sql
+python job_board/manage.py seed_demo
 ```
-
-Replace <database_user> and <database_name> with the values configured in your .env file.
-
-The sample data file is optional and should only be loaded if you want to populate the application with demonstration data.
-
-The complete database setup order is:
-
+All generated demo users use the following default password:
 ```bash
-python manage.py migrate
-psql -U <database_user> -d <database_name> -f db_files/indexes.sql
-psql -U <database_user> -d <database_name> -f db_files/triggers.sql
-psql -U <database_user> -d <database_name> -f db_files/sample_data.sql
+Demo123!ChangeMe
 ```
+A different password can be assigned using the --password option:
+```bash
+python job_board/manage.py seed_demo --password "YourDemoPassword123!"
+```
+To delete previously generated demo records and recreate them, use:
+```bash
+python job_board/manage.py seed_demo --reset
+```
+The command uses the Django ORM and set_password(), so user passwords are securely hashed using Django's configured password hasher before being stored in PostgreSQL.
+
+The generated CV records contain example file paths, but the command does not create physical PDF files. To test CV downloads, corresponding PDF files must be added manually to the configured media directory.
 
 ## REST API
 
