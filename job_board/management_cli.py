@@ -7,27 +7,26 @@ from psycopg import sql, Error
 from tabulate import tabulate
 from datetime import date, datetime
 from getpass import getpass
-
-DB_NAME = ''        # database name
-DB_PASSWORD = ''    # database password
-PORT_NUMBER = 5432
+from pathlib import Path
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
-
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import connection, transaction, IntegrityError, DatabaseError
 from django.contrib.auth.hashers import make_password
+
+DATABASE_CONFIG = settings.DATABASES["default"]
 
 Users = get_user_model()
 
 def connect():
     return psycopg.connect(
-        host="localhost",
-        dbname=DB_NAME,
-        user="postgres",
-        password=DB_PASSWORD,
-        port=PORT_NUMBER
+        dbname=DATABASE_CONFIG["NAME"],
+        user=DATABASE_CONFIG["USER"],
+        password=DATABASE_CONFIG["PASSWORD"],
+        host=DATABASE_CONFIG.get("HOST") or "localhost",
+        port=DATABASE_CONFIG.get("PORT") or 5432,
     )
 
 def clear():
