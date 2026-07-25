@@ -146,8 +146,10 @@ python job_board/manage.py test
 Django migrations create the application's database tables. After running the migrations, load the additional PostgreSQL indexes and triggers:
 
 python job_board/manage.py migrate
+```bash
 psql -U postgres -d job_offer_manager -f db_files/indexes.sql
 psql -U postgres -d job_offer_manager -f db_files/triggers.sql
+```
 
 Replace postgres and job_offer_manager with the values configured in your .env file when using different database credentials.
 
