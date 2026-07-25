@@ -80,7 +80,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-5. Create a PostgreSQL database for the application.
+5. Create a PostgreSQL database for the application, including triggers, indexes, and sample data as described in the PostgreSQL Database Initialization section.
 
 6. Create a .env file based on .env.example and configure the required environment variables.
 
@@ -185,3 +185,6 @@ Protected endpoints require authentication. Depending on the configured authenti
 1. Docker configuration
 2. Improved test coverage
 3. Email notifications
+
+## Author
+Jan Piwowarczyk
