@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+    {% if user.is_authenticated and user.role == 'Employer' and applications %}
+        <h3 class="text-center mb-3" style="margin-top: 30px;"> Applications for your job offers </h3>
+
+        <table class="table table-bordered table-striped text-center" style="margin-top: 20px">
+            <thead class="thead-dark">
+                <tr>
+                    <th> Job offer id </th>
+                    <th> Position </th>
+                    <th> Candidate name </th>
+                    <th> Candidate email </th>
+                    <th> CV </th>
+                    <th> Sent at </th>
+                    <th> Status </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for application in applications %}
+                    <tr>
+                        <td>{{ application.job_offer.id }}</td>
+                        <td>{{ application.job_offer.title }}</td>
+                        <td>
+                            {% if application.candidate.first_name and application.candidate.last_name %}
+                                {{ application.candidate.first_name }} {{ application.candidate.last_name }}
+                            {% elif application.candidate.first_name %}
+                                {{ application.candidate.first_name }}
+                            {% elif application.candidate.last_name %}
+                                {{ application.candidate.first_name }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ application.candidate.user.email }}</td>
+                        <td>
+                            {% if application.cv.file_url %}
+                                <a href="{{ application.cv.file_url.url }}" class="btn btn-primary btn-sm" download>
+                                    Download CV
+                                </a>
+                            {% else %}
+                                No file
+                            {% endif %}
+                        </td>
+                        <td>{{ application.updated_at }}</td>
+                        <td>
+                            {% if application.status == "Sent" %}
+                                <form method="post">
+                                    {% csrf_token %}
+                                    
+                                    <input type="hidden" name="job_offer_id" value="{{ application.job_offer_id }}">
+                                    <input type="hidden" name="candidate_id" value="{{ application.candidate_id }}">
+                                    <input type="hidden" name="cv_id" value="{{ application.cv_id }}">
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        <select id="status" name="status" class="form-select">
+                                            <option value="" selected disabled>
+                                                {{ application.status }}
+                                            </option>
+                                            <option value="Reviewed"> Reviewed </option>
+                                            <option value="Rejected"> Rejected </option>
+                                            <option value="Accepted"> Accepted </option>
+                                        </select>
+
+                                        <button type="submit" class="btn btn-primary">
+                                            Save
+                                        </button>
+                                    </div>
+
+                                </form>
+                            {% else %}
+                                {{ application.status }}
+                            {% endif %}
+                        </td>
+                {% empty %}
+                    <h3 class="text-center"> No applications yet </h3>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}

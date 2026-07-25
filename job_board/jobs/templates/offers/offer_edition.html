@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label class="form-label"> Title </label>
+        {% if offer.title %}
+            <input type="text" name="title" class="form-control" value="{{ offer.title }}">
+        {% else %}
+            <input type="text" name="title" class="form-control" placeholder="Enter title">
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label"> Description </label>
+        {% if offer.description %}
+            <textarea id="description" name="description" class="form-control" rows="6" value="{{ offer.description }}"> {{ offer.description }} </textarea>
+        {% else %}
+            <textarea id="description" name="description" class="form-control" rows="6" placeholder="Enter description"></textarea>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label"> Requirements </label>
+        {% if offer.requirements %}
+            <textarea id="requirements" name="requirements" class="form-control" rows="6" value="{{ candidate.requirements }}"> {{ offer.requirements }} </textarea>
+        {% else %}
+            <textarea id="requirements" name="requirements" class="form-control" rows="6" placeholder="Enter requirements"></textarea>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label"> Responsibilities </label>
+        {% if offer.responsibilities %}
+            <textarea id="responsibilities" name="responsibilities" class="form-control" rows="6" value="{{ candidate.responsibilities }}"> {{ offer.responsibilities }} </textarea>
+        {% else %}
+            <textarea id="responsibilities" name="responsibilities" class="form-control" rows="6" placeholder="Enter responsibilities"></textarea>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="employment_type" class="form-label"> Employment type </label>
+        <select id="employment_type" name="employment_type" class="form-select"> 
+            <option value="Full-time"  {% if offer.employment_type == "Full-time"  %} selected {% endif %}> Full-time  </option>
+            <option value="Part-time"  {% if offer.employment_type == "Part-time"  %} selected {% endif %}> Part-time  </option>
+            <option value="Contract"   {% if offer.employment_type == "Contract"   %} selected {% endif %}> Contract   </option>
+            <option value="Temporary"  {% if offer.employment_type == "Temporary"  %} selected {% endif %}> Temporary  </option>
+            <option value="Internship" {% if offer.employment_type == "Internship" %} selected {% endif %}> Internship </option>
+            <option value="Seasonal"   {% if offer.employment_type == "Seasonal"   %} selected {% endif %}> Seasonal   </option>
+            <option value="Volunteer"  {% if offer.employment_type == "Volunteer"  %} selected {% endif %}> Volunteer  </option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="work_mode" class="form-label"> Work mode </label>
+        <select id="work_mode" name="work_mode" class="form-select">
+            <option value="Remote" {% if offer.work_mode == "Remote" %} selected {% endif %}> Remote  </option>
+            <option value="Hybrid" {% if offer.work_mode == "Hybrid" %} selected {% endif %}> Hybrid  </option>
+            <option value="Onsite" {% if offer.work_mode == "Onsite" %} selected {% endif %}> On-site </option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="contract_type" class="form-label"> Contract type </label>
+        <select id="contract_type" name="contract_type" class="form-select">
+            <option value="B2b" {% if offer.contract_type == "B2b" %} selected {% endif %} > B2b </option>
+            <option value="Employment contract" {% if offer.contract_type == "Employment contract" %} selected {% endif %}> Employment contract </option>
+            <option value="Contract of mandate" {% if offer.contract_type == "Contract of mandate" %} selected {% endif %}> Contract of mandate </option>
+            <option value="Contract for specific work" {% if offer.contract_type == "Contract for specific work" %} selected {% endif %}> Contract for specific work </option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="status" class="form-label"> Status </label>
+        <select id="status" name="status" class="form-select">
+            <option value="Draft"   {% if offer.status == "Draft"   %} selected {% endif %}> Draft   </option>
+            <option value="Active"  {% if offer.status == "Active"  %} selected {% endif %}> Active  </option>
+            <option value="Closed"  {% if offer.status == "Closed"  %} selected {% endif %}> Closed  </option>
+            <option value="Expired" {% if offer.status == "Expired" %} selected {% endif %}> Expired </option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="role_choice" class="form-label"> Experience level </label>
+        <select id="role_choice" name="experience_level" class="form-select">
+            <option value="Intern"      {% if offer.experience_level == "Intern"      %} selected {% endif %}> Intern </option>
+            <option value="Entry level" {% if offer.experience_level == "Entry level" %} selected {% endif %}> Entry level </option>
+            <option value="Junior"      {% if offer.experience_level == "Junior"      %} selected {% endif %}> Junior </option>
+            <option value="Mid level"   {% if offer.experience_level == "Mid level"   %} selected {% endif %}> Mid level </option>
+            <option value="Senior"      {% if offer.experience_level == "Senior"      %} selected {% endif %}> Senior </option>
+            <option value="Lead"        {% if offer.experience_level == "Lead"        %} selected {% endif %}> Lead </option>
+            <option value="Expert"      {% if offer.experience_level == "Expert"      %} selected {% endif %}> Expert </option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label"> Minimum salary </label>
+        {% if offer.salary_min %}
+            <input type="text" name="salary_min" class="form-control" value="{{ offer.salary_min }}">
+        {% else %}
+            <input type="text" name="salary_min" class="form-control" placeholder="Enter minimum salary">
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label"> Maxium salary </label>
+        {% if offer.salary_max %}
+            <input type="text" name="salary_max" class="form-control" value="{{ offer.salary_max }}">
+        {% else %}
+            <input type="text" name="salary_max" class="form-control" placeholder="Enter maximum salary">
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary"> Update offer </button>
+</form>
+{% endblock %}

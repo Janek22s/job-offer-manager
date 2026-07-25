@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1> Registration </h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+
+<!--
+    <div class="mb-3">
+        <label class="form_label"> Email </label>
+        {% if user.email %}
+            <input type="email" name="email" class="form-control" value="{{ user.email }}">
+        {% else %}
+            <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+        {% endif %}
+    </div>
+-->
+    <div class="mb-3">
+        <label class="form_label"> Phone number </label>
+        {% if user.phone_number %}
+            <input type="text" name="phone_number" class="form-control" value="{{ user.phone_number }}">
+        {% else %}
+            <input type="text" name="phone_number" class="form-control" placeholder="Enter your phone number">
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form_label"> First name </label>
+        {% if candidate.first_name %}
+            <input type="text" name="first_name" class="form-control" value="{{ candidate.first_name }}">
+        {% else %}
+            <input type="text" name="first_name" class="form-control" placeholder="Enter your first name">
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form_label"> Last name </label>
+        {% if candidate.last_name %}
+            <input type="text" name="last_name" class="form-control" value="{{ candidate.last_name }}">
+        {% else %}
+            <input type="text" name="last_name" class="form-control" placeholder="Enter your last name">
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form_label"> Bio </label>
+        {% if candidate.bio %}
+            <!-- <input type="text" name="bio" class="form-control" value="{{ candidate.bio|truncatechars:20 }}"> -->
+            <textarea id="bio" name="bio" class="form-control" rows="6" value="{{ candidate.bio }}"> {{ candidate.bio }} </textarea>
+        {% else %}
+            <!-- <input type="text" name="bio" class="form-control" placeholder="Enter your bio"> -->
+            <textarea id="bio" name="bio" class="form-control" rows="6" placeholder="Enter your bio"></textarea>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="role_choice" class="form_label"> Experience level </label>
+        <select id="role_choice" name="experience_level" class="form-select">
+            <option classvalue="" selected disabled> Choose your experience level </option>
+            <option value="Intern"> Intern </option>
+            <option value="Entry level"> Entry level </option>
+            <option value="Junior"> Junior </option>
+            <option value="Mid level"> Mid level </option>
+            <option value="Senior"> Senior </option>
+            <option value="Lead"> Lead </option>
+            <option value="Expert"> Expert </option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary"> Update profile </button>
+</form>
+{% endblock %}

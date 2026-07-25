@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1> Login </h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <div class="mb-3">
+        <label class="form_label"> Email </label>
+        <input type="email" name="email" class="form-control" placeholder="Enter your Email" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form_label"> Password </label>
+        <input type="password" name="password" class="form-control" placeholder="Enter your password">
+    </div>
+
+    <button type="submit" class="btn btn-primary"> Sign in </button>
+
+    <a class="nav-link" style="color: grey; margin-top: 20px;" href="{% url 'offers:register' %}"> I don't have an account </a>
+</form>
+
+{% endblock %}

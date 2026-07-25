@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="text-center mb-4">
+                <h1 class="fw-bold mb-2"> Apply for the position of </h1>
+
+                <h3 class="text-primary"> {{ offer.title }} </h3>
+
+                <p class="text-muted mb-0"> {{ offer.company }} </p>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <h4 class="mb-3"> Candidate Information </h4>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {% if candidate.first_name and candidate.last_name %}
+                                    <label for="name" class="form-label fw-semibold text-center"> 
+                                        Name: {{ candidate.first_name }} {{ candidate.last_name }}
+                                    </label>
+                                {% endif %}
+
+                                <label for="email" class="form-label fw-semibold text-center"> 
+                                    Email: {{ user.email }}
+                                </label>
+
+                                {% if user.phone_number %}
+                                    <label for="phone" class="form-label fw-semibold text-center"> 
+                                        Phone number: {{ user.phone_number }}
+                                    </label>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="cv" class="form-label fw-semibold">
+                                Upload your CV (PDF only)
+                            </label>
+
+                            <input type="file" id="file_url" name="file_url" class="form-control" accept="application/pdf,.pdf" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold"> 
+                                Message to the employer 
+                            </label>
+                            <textarea id="message" name="message" class="form-control" rows="6" placeholder="Enter your message"></textarea>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Apply
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

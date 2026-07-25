@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %} Job Offers {% endblock %}
+
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+    {% for saved_offer in saved_offers %}
+        <section style="max-width: 900px; margin: 0 auto">
+            <section style="position: relative; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08)">
+
+                {% if user.is_authenticated and user.role == 'Candidate' %}
+                    {% if saved_offer.job_offer.id in saved_offers_ids %}
+                        <a href="{% url 'offers:delete_form_saved' saved_offer.job_offer.id %}" style="position: absolute; top: 24px; right: 24px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 20px; border: 1px solid #0d6efd; background: #e7f1ff; color: #0d6efd; text-decoration: none; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s" onmouseover="this.style.background='#cfe2ff'" onmouseout="this.style.background='#e7f1ff'">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+                            Saved
+                        </a>
+                    {% else %}
+                        <a href="{% url 'offers:save_offer' saved_offer.job_offer.id %}" style="position: absolute; top: 24px; right: 24px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 20px; border: 1px solid #e0e0e0; background: #fff; color: #333; text-decoration: none; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+                            Save
+                        </a>
+                    {% endif %}
+                {% endif %}
+                
+                <div> 
+                    <h2>{{ saved_offer.job_offer.title }}</h2>
+                    <p style="margin: 6px 0 0; color: #666"> {{ saved_offer.job_offer.company }} / {{ saved_offer.job_offer.location }} </p>
+                </div>
+
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 15px">
+                    <span class="bluepill">
+                        {{ saved_offer.job_offer.employment_type }}
+                    </span>
+
+                    <span class="bluepill">
+                        {{ saved_offer.job_offer.experience_level }}
+                    </span>
+
+                    <span class="bluepill">
+                        {{ saved_offer.job_offer.contract_type }}
+                    </span>
+
+                    <span class="bluepill">
+                        {{ saved_offer.job_offer.work_mode }}
+                    </span>
+                </div>
+
+                <a href="{% url 'offers:offer_detail' saved_offer.job_offer.id %}" class="btn btn-primary mt-3">
+                    View offer
+                </a>
+            </section>
+        </section>
+    {% empty %}
+        <h3 class="text-center"> No offers saved </h3>
+    {% endfor %}
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1> Registration </h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <div class="mb-3">
+        <label class="form_label"> Email </label>
+        <input type="email" name="email" class="form-control" placeholder="Enter your Email" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form_label"> Phone number </label>
+        <input type="text" name="phone_number" class="form-control" placeholder="Enter your phone number" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form_label"> Password </label>
+        <input type="password" name="password1" class="form-control" placeholder="Enter your password" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form_label"> Repeat password </label>
+        <input type="password" name="password2" class="form-control" placeholder="Repeat your password" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="role_choice" class="form_label"> Choose your role </label>
+        <select id="role_choice" name="role" class="form-select" required>
+            <option value="" selected disabled> Choose your role </option>
+            <option value="Employer"> Employer </option>
+            <option value="Candidate"> Candidate </option>
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label for="company_choice" class="form_label"> Choose company </label>
+        <select id="company_choice" name="company" class="form-select">
+            <option value="" selected disabled> Choose your company (employers only) </option>
+            {% for company in companies %}
+                <option value="{{ company.id }}"> {{ company.name }} </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary"> Sign up </button>
+</form>
+
+{% endblock %}
