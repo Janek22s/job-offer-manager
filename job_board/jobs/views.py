@@ -237,7 +237,15 @@ def employer_profile_update_view(request):
 
 @login_required
 def offer_edition_view(request, offer_id):
+    user = request.user
+    if user.role != "Employer":
+        raise PermissionError
+
+    employer = Employers.objects.get(user_id=user.id)
     offer = JobOffers.objects.get(id=offer_id)
+
+    if offer.employer_id != employer.id:
+        raise PermissionError
 
     if request.method == "POST":
         form = EditForm(request.POST)
@@ -349,7 +357,17 @@ def saved_offers_view(request):
 @login_required
 @require_POST
 def delete_offer(request, offer_id):
-    JobOffers.objects.get(id=offer_id).delete()
+    user = request.user
+    if user.role != "Employer":
+        raise PermissionError
+
+    employer = Employers.objects.get(user_id=user.id)
+    offer_to_delete = JobOffers.objects.get(id=offer_id)
+
+    if offer_to_delete.employer_id != employer.id:
+        raise PermissionError
+
+    offer_to_delete.delete()
     return redirect('offers:home')
 
 @login_required
@@ -400,7 +418,12 @@ def employer_applications_view(request):
         candidate_id = request.POST.get("candidate_id")
         cv_id = request.POST.get("cv_id")
 
-        application = Applications.objects.get(job_offer_id=job_offer_id, candidate_id=candidate_id, cv_id=cv_id)
+        application = Applications.objects.get(
+            job_offer_id=job_offer_id, 
+            candidate_id=candidate_id, 
+            cv_id=cv_id, 
+            job_offer__employer__user=request.user
+        )
 
         if form.is_valid():
             new_status = form.cleaned_data["status"]
