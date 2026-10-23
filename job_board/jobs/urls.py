@@ -21,5 +21,6 @@ urlpatterns = [
     path("saved_offers/", views.saved_offers_view, name="saved_offers"),
     path("<int:offer_id>delete_offer/", views.delete_offer, name="delete_offer"),
     path("delete_account/", views.delete_account, name="delete_account"),
-    path("employer_applicaitons/", views.employer_applications_view, name="employer_applications")
+    path("employer_applicaitons/", views.employer_applications_view, name="employer_applications"),
+    path("candidate_applicaitons/", views.candidate_application_view, name="candidate_applications")
 ]

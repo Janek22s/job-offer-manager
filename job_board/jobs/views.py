@@ -429,3 +429,24 @@ def employer_applications_view(request):
     
     
     return render(request, 'employer/applications_for_offers.html', {'applications': applications, 'form' : form})
+
+@role_required("Candidate")
+def candidate_application_view(request):
+    user = request.user
+    candidate = Candidates.objects.get(user_id=user.id)
+
+    applications = Applications.objects.filter(
+        candidate=candidate
+    ).order_by(
+        'candidate', 
+        'job_offer', 
+        '-created_at'
+    ).distinct(
+        'candidate', 
+        'job_offer'
+    )
+
+    offer_ids = applications.values_list('job_offer_id', flat=True)
+    applied_offers = JobOffers.objects.filter(id__in=offer_ids)
+
+    return render(request, 'candidate/applied_offers.html', {'user' : user, 'applied_offers' : applied_offers})

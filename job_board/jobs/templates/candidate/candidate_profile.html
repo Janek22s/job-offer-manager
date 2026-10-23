@@ -180,16 +180,29 @@
 
         </div>
     </div>
-    <a href="{% url 'offers:candidate_profile_update' %}" class="btn btn-success mt-3">
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+
+    <a href="{% url 'offers:candidate_profile_update' %}"
+       class="btn btn-success">
         Update your profile
     </a>
 
-    <form method="post" action="{% url 'offers:delete_account' %}" onsubmit="return confirm('Are you sure you want to delete your account?');">
+    <a href="{% url 'offers:candidate_applications' %}"
+       class="btn btn-primary">
+        Show your applications
+    </a>
+
+    <form method="post"
+          action="{% url 'offers:delete_account' %}"
+          onsubmit="return confirm('Are you sure you want to delete your account?');">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger mt-3">
+        <button type="submit" class="btn btn-danger">
             Delete your account
         </button>
     </form>
+
+</div>
 
 </div>
 

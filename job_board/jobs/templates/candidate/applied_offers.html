@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %} Job Offers {% endblock %}
+
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+    {% for applied_offer in applied_offers %}
+        <section style="max-width: 900px; margin: 0 auto">
+            <section style="position: relative; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08)">
+
+                <div> 
+                    <h2>{{ applied_offer.title }}</h2>
+                    <p style="margin: 6px 0 0; color: #666"> {{ applied_offer.company }} / {{ applied_offer.location }} </p>
+                </div>
+
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 15px">
+                    <span class="bluepill">
+                        {{ applied_offer.employment_type }}
+                    </span>
+
+                    <span class="bluepill">
+                        {{ applied_offer.experience_level }}
+                    </span>
+
+                    <span class="bluepill">
+                        {{ applied_offer.contract_type }}
+                    </span>
+
+                    <span class="bluepill">
+                        {{ applied_offer.work_mode }}
+                    </span>
+                </div>
+
+                <a href="{% url 'offers:offer_detail' applied_offer.id %}" class="btn btn-primary mt-3">
+                    View offer
+                </a>
+            </section>
+        </section>
+
+    {% empty %}
+        <h3 class="text-center"> Apply for your first offer </h3>
+    {% endfor %}
+
+{% endblock %}
