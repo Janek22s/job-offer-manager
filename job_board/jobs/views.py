@@ -4,6 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 from django.db.models.functions import Now
+from django.core.exceptions import PermissionDenied
+
+from .decorators import role_required
 
 from .forms import RegisterForm, LoginForm, CandidateForm, EmployerForm, EditForm, ApplicationForm, NewOfferForm, ChangeStatusForm
 
@@ -121,9 +124,7 @@ def logout_view(request):
     logout(request)
     return redirect('offers:home')
 
-# user = request.user
-
-@login_required
+@role_required("Candidate")
 def application_view(request, offer_id):
     user = request.user
     candidate = Candidates.objects.get(user_id=user.id)
@@ -155,18 +156,16 @@ def application_view(request, offer_id):
 
     return render(request, 'offers/application.html', {'user' : user, 'candidate' : candidate, 'offer' : offer, 'form' : form})
 
-@login_required
+@role_required("Candidate")
 def candidate_profile_view(request):
     user = request.user
-
     candidate = Candidates.objects.filter(user_id=user.id).first()
 
     return render(request, 'candidate/candidate_profile.html', {'user' : user, 'candidate' : candidate})
 
-@login_required
+@role_required("Candidate")
 def candidate_profile_update_view(request):
     user = request.user
-
     candidate = Candidates.objects.filter(user_id=user.id).first()
 
     if request.method == "POST":
@@ -194,19 +193,17 @@ def candidate_profile_update_view(request):
 
     return render(request, 'candidate/candidate_profile_update.html', {'user' : user, 'candidate' : candidate, 'form' : form})
 
-@login_required
+@role_required("Employer")
 def employer_profile_view(request):
     user = request.user
-
     employer = Employers.objects.filter(user_id=user.id).first()
     company = Companies.objects.filter(id=employer.company_id).first()
 
     return render(request, 'employer/employer_profile.html', {'user' : user, 'employer' : employer, 'company' : company})
 
-@login_required
+@role_required("Employer")
 def employer_profile_update_view(request):
     user = request.user
-
     employer = Employers.objects.filter(user_id=user.id).first()
 
     if request.method == "POST":
@@ -235,17 +232,14 @@ def employer_profile_update_view(request):
 
     return render(request, 'employer/employer_profile_update.html', {'user' : user, 'employer' : employer, 'form' : form, 'companies' : companies})
 
-@login_required
+@role_required("Employer")
 def offer_edition_view(request, offer_id):
     user = request.user
-    if user.role != "Employer":
-        raise PermissionError
-
     employer = Employers.objects.get(user_id=user.id)
     offer = JobOffers.objects.get(id=offer_id)
 
     if offer.employer_id != employer.id:
-        raise PermissionError
+        raise PermissionDenied("You do not have permission to perform this action.")
 
     if request.method == "POST":
         form = EditForm(request.POST)
@@ -271,7 +265,7 @@ def offer_edition_view(request, offer_id):
 
     return render(request, 'offers/offer_edition.html', {'form' : form, 'offer' : offer})
 
-@login_required
+@role_required("Employer")
 def create_offer_view(request):
     user = request.user
     employer = Employers.objects.get(user_id=user.id)
@@ -318,7 +312,7 @@ def create_offer_view(request):
 
     return render(request, 'offers/create_offer.html', {'employer' : employer, 'form' : form})
 
-@login_required
+@role_required("Candidate")
 def save_offer(request, offer_id):
     user = request.user
     candidate = Candidates.objects.get(user_id=user.id)
@@ -328,7 +322,7 @@ def save_offer(request, offer_id):
 
     return redirect(request.META.get("HTTP_REFERER", "/"))
 
-@login_required
+@role_required("Candidate")
 def delete_form_saved(request, offer_id):
     user = request.user
     candidate = Candidates.objects.get(user_id=user.id)
@@ -338,7 +332,7 @@ def delete_form_saved(request, offer_id):
 
     return redirect(request.META.get("HTTP_REFERER", "/"))
 
-@login_required
+@role_required("Candidate")
 def saved_offers_view(request):
     user = request.user
     candidate = Candidates.objects.get(user_id=user.id)
@@ -354,18 +348,15 @@ def saved_offers_view(request):
 
     return render(request, 'candidate/saved_offers.html', {'user' : user, 'saved_offers' : saved_offers, "saved_offers_ids" : saved_offers_ids})
 
-@login_required
+@role_required("Employer")
 @require_POST
 def delete_offer(request, offer_id):
     user = request.user
-    if user.role != "Employer":
-        raise PermissionError
-
     employer = Employers.objects.get(user_id=user.id)
     offer_to_delete = JobOffers.objects.get(id=offer_id)
 
     if offer_to_delete.employer_id != employer.id:
-        raise PermissionError
+        raise PermissionDenied("You do not have permission to perform this action.")
 
     offer_to_delete.delete()
     return redirect('offers:home')
@@ -395,7 +386,7 @@ def delete_account(request):
 
     return redirect('offers:home')
 
-@login_required
+@role_required("Employer")
 def employer_applications_view(request):
     user = request.user
     employer = Employers.objects.get(user=user)
